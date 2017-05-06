@@ -6,6 +6,8 @@ var extract = require('extract-zip');
 var violationDict = null;
 var scDict = null;
 var samples = null;
+var baseURL = "https://aetestportal.azurewebsites.net/";
+
 //copy all the files and download to local
 //process xlsx and other files and images/videos
 //this will generate a deceptor and call process deceptor api, which will take appId and if it exist in the download storage
@@ -23,16 +25,21 @@ if(!process.env.AE_BLOBSERVICE_SAS_URL)
 var command = "help";
 var appId = null;
 var appPath = null;
-var processDeceptor = false;
+var type = "parse";
 process.argv.forEach(function (val, index, array) {
   if(index == 2)
   {
     appId = val;
     appPath = "Completed/DeceptorReview/" + appId;
   }
-  if(index == 3 && val == "process")
+  if(index == 3)
   {
-    processDeceptor = true;
+    if(val == "process")  {
+      type = val;
+    }
+    else if(val == "generate")  {
+      type = val;
+    }
   }
   /*
   else if(index == 3)
@@ -47,6 +54,7 @@ if(!appId || !appPath)
   console.log("To Run the application:");
   console.log("node index.js <appId> (this will basically read the uploaded information and create json in deceptorinterview folder)");
   console.log("node index.js <appId> process (this will read from deceptorinterview folder and create new AppId)");
+  console.log("node index.js <appId> generate (this will generate xlsx for application scorecard)");
   return;
 }
 //read the xlsx and create json for answers
@@ -59,7 +67,7 @@ if (!fs.existsSync("./" + appId)){
 
 function ProcessDeceptorInterview() {
   console.log("processing for deceptor: " + appId +" ....");
-  var processURL = "http://localhost:46562/deceptor/process?appId=" + appId;
+  var processURL = baseUrl + "deceptor/process?appId=" + appId;
   axios.get(processURL).then(function(response) {
     console.log("Successfully processed deceptor:" + appId);
   });
@@ -419,10 +427,17 @@ function downloadFiles() {
   });
 }
 
-if(processDeceptor) {
+if(processDeceptor == "process") {
+  console.log("Processing K7 data of deceptor and creating deceptor for portal");
   ProcessDeceptorInterview();
 }
+else if(processDeceptor == "generate") {
+  console.log("Generating xlsx for appId");
+  var generate = require("./generate.js");
+  generate.generate(appId, baseUrl);
+}
 else {
-//  downloadFiles();
-UnZipInterview();
+  console.log("Parsing K7 data of xlsx");
+  downloadFiles();
+  UnZipInterview();
 }

@@ -1,6 +1,6 @@
 {
-  "name": "appesteem-util",
-  "version": "2.0.0",
+  "name": "aek7process",
+  "version": "3.0.0",
   "main": "index.js",
   "description": "Utility of AppEsteem for processing",
   "scripts": {
