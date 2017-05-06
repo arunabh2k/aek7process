@@ -161,7 +161,7 @@ function CopyExecutable() {
 
 function PutNotes() {
   var put = require("./put.js");
-  var fileName =  __dirname + "/" + appId + "/Notes.txt";
+  var fileName =  "./" + appId + "/Notes.txt";
   put.put("deceptorinterview", fileName, appId + "/Notes.txt", function(resp, error) {
     if(error) {
       console.log("Error Uploading Notes exiting ...");
