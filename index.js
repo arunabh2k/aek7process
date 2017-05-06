@@ -434,7 +434,7 @@ if(processDeceptor == "process") {
 else if(processDeceptor == "generate") {
   console.log("Generating xlsx for appId");
   var generate = require("./generate.js");
-  generate.generate(appId, baseUrl);
+  generate.generate(appId, baseURL);
 }
 else {
   console.log("Parsing K7 data of xlsx");
