@@ -439,5 +439,4 @@ else {
       fs.mkdirSync("./" + appId);
   }
   downloadFiles();
-  UnZipInterview();
 }
