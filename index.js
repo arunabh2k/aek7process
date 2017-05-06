@@ -25,7 +25,7 @@ if(!process.env.AE_BLOBSERVICE_SAS_URL)
 var command = "help";
 var appId = null;
 var appPath = null;
-var type = "parse";
+var processDeceptor = "parse";
 process.argv.forEach(function (val, index, array) {
   if(index == 2)
   {
@@ -35,10 +35,10 @@ process.argv.forEach(function (val, index, array) {
   if(index == 3)
   {
     if(val == "process")  {
-      type = val;
+      processDeceptor = val;
     }
     else if(val == "generate")  {
-      type = val;
+      processDeceptor = val;
     }
   }
   /*
