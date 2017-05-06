@@ -2,7 +2,7 @@ var axios = require("axios");
 var Excel = require('exceljs');
 
 exports.generate = function(appId, baseUrl) {
-  var schemaURL = baseUrl + "api/schema";
+  var schemaURL = baseUrl + "api/schema?schema=DeceptorList";
   axios.get(schemaURL).then(function(response) {
     console.log("Reading schema ....");
     var questions = response.data;
@@ -71,7 +71,7 @@ exports.generate = function(appId, baseUrl) {
     workbook.addWorksheet('Interview_Question');
     workbook.addWorksheet('Executable');
     workbook.addWorksheet('Queries');
-    
+
     console.log("Writing file ....");
     var fileName = "./" + appId + ".xlsx";
     workbook.xlsx.writeFile(fileName)

@@ -61,13 +61,10 @@ if(!appId || !appPath)
 //create a folder for appId similar to required in deceptor page
 //mput all the files
 //also find how to read sample and source files
-if (!fs.existsSync("./" + appId)){
-    fs.mkdirSync("./" + appId);
-}
 
 function ProcessDeceptorInterview() {
   console.log("processing for deceptor: " + appId +" ....");
-  var processURL = baseUrl + "deceptor/process?appId=" + appId;
+  var processURL = baseURL + "deceptor/process?appId=" + appId;
   axios.get(processURL).then(function(response) {
     console.log("Successfully processed deceptor:" + appId);
   });
@@ -364,7 +361,7 @@ function  ReadInterview() {
 }
 
 function ReadQuesSchema() {
-  var schemaURL = "https://customer.appesteem.com/api/schema";
+  var schemaURL = baseURL + "api/schema?schema=DeceptorList";
   axios.get(schemaURL).then(function(response) {
     console.log("Reading schema ....");
     var questions = response.data;
@@ -438,6 +435,9 @@ else if(processDeceptor == "generate") {
 }
 else {
   console.log("Parsing K7 data of xlsx");
+  if (!fs.existsSync("./" + appId)){
+      fs.mkdirSync("./" + appId);
+  }
   downloadFiles();
   UnZipInterview();
 }
