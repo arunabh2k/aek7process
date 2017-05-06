@@ -1,0 +1,34 @@
+{
+  "name": "appesteem-util",
+  "version": "2.0.0",
+  "main": "index.js",
+  "description": "Utility of AppEsteem for processing",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "aeutil": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arunabh2k/aek7process.git"
+  },
+  "keywords": [
+    "none"
+  ],
+  "author": "Arunabh Trivedi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arunabh2k/aek7process/issues"
+  },
+  "homepage": "https://github.com/arunabh2k/aek7process#readme",
+  "dependencies": {
+    "axios": "^0.16.1",
+    "azure": "^1.2.0-preview",
+    "exceljs": "^0.4.4",
+    "extract-zip": "^1.6.5",
+    "glob": "^7.1.1",
+    "mkdirp": "^0.5.1"
+  }
+}
