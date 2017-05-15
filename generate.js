@@ -3,7 +3,7 @@ var Excel = require('exceljs');
 var setHeader = function(colRef, name) {
   colRef.value = name;
   colRef.font = {size: 10,bold: true,color: { argb: '00f2f2f2' }};
-  colRef.fill = {type: 'pattern',pattern:'darkVertical',fgColor:{argb:'001c75bc'}};
+  colRef.fill = {type: 'pattern',pattern:'solid',fgColor:{argb:'001c75bc'}};
   colRef.border = {
     top: {style:'thick', color: {argb:'00e6e6e6'}},
     left: {style:'thick', color: {argb:'00e6e6e6'}},
@@ -22,7 +22,7 @@ var setQuestion = function(colRef, name) {
   };
   colRef.fill = {
     type: 'pattern',
-    pattern:'darkVertical',
+    pattern:'solid',
     fgColor:{argb:'00d9d9d9'}
   };
 }
@@ -68,9 +68,9 @@ exports.generate = function(appId, baseUrl) {
     worksheet.getCell('A1').value = "ACR/Details";
     worksheet.getCell('B1').value = "Category";
     worksheet.getCell('A1').font = {size: 10,bold: true,color: { argb: '00f2f2f2' }};
-    worksheet.getCell('A1').fill = {type: 'pattern',pattern:'darkVertical',fgColor:{argb:'001c75bc'}};
+    worksheet.getCell('A1').fill = {type: 'pattern',pattern:'solid',fgColor:{argb:'001c75bc'}};
     worksheet.getCell('B1').font = {size: 10,bold: true,color: { argb: '00f2f2f2' }};
-    worksheet.getCell('B1').fill = {type: 'pattern',pattern:'darkVertical',fgColor:{argb:'001c75bc'}};
+    worksheet.getCell('B1').fill = {type: 'pattern',pattern:'solid',fgColor:{argb:'001c75bc'}};
     worksheet.getColumn(1).width = 40;
     worksheet.getColumn(1).alignment = {wrapText: true };
     worksheet.getColumn(2).width = 12;
@@ -121,7 +121,7 @@ exports.generate = function(appId, baseUrl) {
       var colName = colpos[jx];
       worksheet.getCell(colIx+'1').value = colName;
       worksheet.getCell(colIx+'1').font = {size: 10,bold: true,color: { argb: '00f2f2f2' }};
-      worksheet.getCell(colIx+'1').fill = {type: 'pattern',pattern:'darkVertical',fgColor:{argb:'001c75bc'}};
+      worksheet.getCell(colIx+'1').fill = {type: 'pattern',pattern:'solid',fgColor:{argb:'001c75bc'}};
       worksheet.getColumn(rx).width = 12;
       worksheet.getColumn(rx).alignment = {wrapText: true };
 
@@ -139,14 +139,14 @@ exports.generate = function(appId, baseUrl) {
           //here we will just fill with green color to identify that question needs to be answered
           worksheet.getCell(colIx+bx).fill = {
             type: 'pattern',
-            pattern:'darkVertical',
+            pattern:'solid',
             fgColor:{argb:'0092d032'}
           };
         }
         else {
           worksheet.getCell(colIx+bx).fill = {
             type: 'pattern',
-            pattern:'darkVertical',
+            pattern:'solid',
             fgColor:{argb:'00d9d9d9'}
           };
         }
