@@ -230,45 +230,53 @@ function ProcessExecs(ws) {
           break;
         }
         if(val == "File Name and Path" || val == "fileName") {
-          colNameDict[colIx] = "fileName";
+          colNameDict[colIx] = "FileName";
         }
         else if(val == "Thumbprint" || val == "digitalCertThumbprint") {
-          colNameDict[colIx] = "digitalCertThumbprint";
+          colNameDict[colIx] = "DigitalCertThumbprint";
         }
         else if(val == "Company Name" || val == "companyName") {
-          colNameDict[colIx] = "companyName";
+          colNameDict[colIx] = "CompanyName";
         }
         else if(val == "Product Name" || val == "productName") {
-          colNameDict[colIx] = "productName";
+          colNameDict[colIx] = "ProductName";
         }
         else if(val == "Product Version" || val == "productVersion") {
-          colNameDict[colIx] = "productVersion";
+          colNameDict[colIx] = "ProductVersion";
         }
         else if(val == "File Version" || val == "fileVersion") {
-          colNameDict[colIx] = "fileVersion";
+          colNameDict[colIx] = "FileVersion";
         }
         else if(val == "MD5" || val == "hashMD5") {
-          colNameDict[colIx] = "hashMD5";
+          colNameDict[colIx] = "HashMD5";
         }
         else if(val == "SHA1" || val == "hashSHA1") {
-          colNameDict[colIx] = "hashSHA1";
+          colNameDict[colIx] = "HashSHA1";
         }
         else if(val == "SHA256" || val == "hashSHA256") {
-          colNameDict[colIx] = "hashSHA256";
+          colNameDict[colIx] = "HashSHA256";
         }
         else if(val == "Issuer Name" || val == "issuerName") {
-          colNameDict[colIx] = "issuerName";
+          colNameDict[colIx] = "IssuerName";
         }
         else if(val == "Issued To" || val == "issuedTo") {
-          colNameDict[colIx] = "issuedTo";
+          colNameDict[colIx] = "IssuedTo";
         }
         else {
           console.log("Unknown Header Found :" + val + ", continuing the process");
         }
       }
       else {
+        if(!sample["Hash"]) {
+          sample["Hash"] = {};
+        }
         if(colNameDict[colIx]) {
-          sample[colNameDict[colIx]] = val;
+          if(colNameDict[colIx].indexOf("Hash") == 0) {
+            sample["Hash"][colNameDict[colIx].substring(4)] = val;
+          }
+          else {
+            sample[colNameDict[colIx]] = val;
+          }
         }
       }
     }
