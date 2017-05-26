@@ -6,14 +6,14 @@ var extract = require('extract-zip');
 var violationDict = null;
 var scDict = null;
 var samples = null;
-var baseURL = "https://aetestportal.azurewebsites.net/";
+var baseURL = "https://customer.appesteem.com/";
 
 //copy all the files and download to local
 //process xlsx and other files and images/videos
 //this will generate a deceptor and call process deceptor api, which will take appId and if it exist in the download storage
 //it will process it and create a deceptor which is inspected,
 //approver can then view/approve/publish it
-
+//console.log(baseURL);
 if(!process.env.AE_BLOBSERVICE_SAS_URL)
 {
   console.log(" ");
@@ -52,9 +52,9 @@ process.argv.forEach(function (val, index, array) {
 if(!appId || !appPath)
 {
   console.log("To Run the application:");
-  console.log("node index.js <appId> (this will basically read the uploaded information and create json in deceptorinterview folder)");
-  console.log("node index.js <appId> process (this will read from deceptorinterview folder and create new AppId)");
-  console.log("node index.js <appId> generate (this will generate xlsx for application scorecard)");
+  console.log("aek7process <appId> (this will basically read the uploaded information and create json in deceptorinterview folder)");
+  console.log("aek7process <appId> process (this will read from deceptorinterview folder and create new AppId)");
+  console.log("aek7process <appId> generate (this will generate xlsx for application scorecard)");
   return;
 }
 //read the xlsx and create json for answers
@@ -160,6 +160,9 @@ function CopyExecutable() {
 }
 
 function PutNotes() {
+  CopyMedia();
+
+  /*
   var put = require("./put.js");
   var fileName =  "./" + appId + "/Notes.txt";
   put.put("deceptorinterview", fileName, appId + "/Notes.txt", function(resp, error) {
@@ -171,6 +174,7 @@ function PutNotes() {
       CopyMedia();
     }
   });
+  */
 }
 
 function UploadMetadata() {
@@ -363,6 +367,9 @@ function  ReadInterview() {
     if(!wsACR) {
       wsACR = workbook.getWorksheet('ACR_ScoreCard');
     }
+    if(!wsACR) {
+      wsACR = workbook.getWorksheet('Deceptor_List');
+    }
     var wsExec = workbook.getWorksheet('Executables');
     ProcessACRAndExecs(wsACR, wsExec);
   });
@@ -417,12 +424,12 @@ function downloadFiles() {
         if(csucc) {
           console.log("Successfully downloaded Notes.txt");
           //now downloaded
-          UnZipInterview();
         }
         else {
-          console.log("Error downloading Notes.txt exiting ....");
+          console.log("Error downloading Notes.txt ....");
           console.log(error);
         }
+        UnZipInterview();
       });
     }
     else {

@@ -29,6 +29,7 @@ var setQuestion = function(colRef, name) {
 
 exports.generate = function(appId, baseUrl) {
   var schemaURL = baseUrl + "api/schema?schema=DeceptorList";
+  console.log("Fetching Schema from:" + schemaURL);
   axios.get(schemaURL).then(function(response) {
     console.log("Reading schema ....");
     var questions = response.data;
