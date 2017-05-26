@@ -233,6 +233,7 @@ function ProcessExecs(ws) {
           maxCol = j;
           break;
         }
+
         if(val == "File Name and Path" || val == "fileName") {
           colNameDict[colIx] = "FileName";
         }
@@ -288,7 +289,7 @@ function ProcessExecs(ws) {
       if(!samples) {
         samples = [];
       }
-      if(sample.fileName){
+      if(sample.FileName){
         samples.push(sample);
       }
     }
@@ -296,10 +297,7 @@ function ProcessExecs(ws) {
   if(!samples) {
     console.log("No MetaData found");
   }
-  else {
-//    console.log(samples);
-    UploadViolation();
-  }
+  UploadViolation();
 }
 
 function ProcessACRAndExecs(ws, wsExec) {
@@ -370,7 +368,21 @@ function  ReadInterview() {
     if(!wsACR) {
       wsACR = workbook.getWorksheet('Deceptor_List');
     }
+    if(!wsACR) {
+      wsACR = workbook.getWorksheet('ACR_Details');
+    }
     var wsExec = workbook.getWorksheet('Executables');
+    if(!wsExec) {
+      wsExec = workbook.getWorksheet('Executable');
+    }
+    if(!wsACR) {
+      console.log("Not able to find tab for DeceptorList with Name ACR_List or ACR_ScoreCard or Deceptor_List or ACR_Details ... exiting");
+      return;
+    }
+    if(!wsExec) {
+      console.log("Not able to find tab for Executables with Name Executables or Executables ... exiting");
+      return;
+    }
     ProcessACRAndExecs(wsACR, wsExec);
   });
 }
@@ -453,5 +465,6 @@ else {
   if (!fs.existsSync("./" + appId)){
       fs.mkdirSync("./" + appId);
   }
+
   downloadFiles();
 }
