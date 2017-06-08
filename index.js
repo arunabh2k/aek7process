@@ -6,8 +6,9 @@ var extract = require('extract-zip');
 var violationDict = null;
 var scDict = null;
 var samples = null;
-var baseURL = "https://customer.appesteem.com/";
-
+var baseURL = "http://localhost:46562/";
+var acrQidDict = {};
+var unknownQid = null;
 //copy all the files and download to local
 //process xlsx and other files and images/videos
 //this will generate a deceptor and call process deceptor api, which will take appId and if it exist in the download storage
@@ -64,7 +65,7 @@ if(!appId || !appPath)
 
 function ProcessDeceptorInterview() {
   console.log("processing for deceptor: " + appId +" ....");
-  var processURL = baseURL + "deceptor/process?appId=" + appId;
+  var processURL = baseURL + "deceptor/process?displayId=" + appId;
   axios.get(processURL).then(function(response) {
     console.log("Successfully processed deceptor:" + appId);
   });
@@ -82,6 +83,24 @@ function uploadMedia(fileName, basePath, citem) {
   });
 }
 
+function getQuesId(fileName) {
+  var acrIx = fileName.indexOf("ACR-");
+  if(acrIx > -1) {
+    var acrNo = fileName.substring(acrIx, acrIx+7);
+    if(acrQidDict[acrNo]) {
+      return acrQidDict[acrNo];
+    }
+    else {
+      console.log("not found acr: " +  acrNo + " in dict, returning: " + unknownQid)
+      return unknownQid;
+    }
+  }
+  else {
+    console.log("fileName doesnt contain acr number: " + fileName + " returning: " + unknownQid);
+    return unknownQid;
+  }
+}
+
 function processDir(item) {
   if(item == "ACR-INFO") {
     fs.readdir(__dirname + "/" + appId + "/interview/Images/" + item + "/", function(cerr, citems) {
@@ -92,7 +111,8 @@ function processDir(item) {
         for(var j in citems) {
           var citem = citems[j];
           var fileName =  __dirname + "/" + appId + "/interview/Images/" + item + "/" + citem;
-          uploadMedia(fileName, appId + "/review/othervideos/", citem);
+          var qid = getQuesId(citem);
+          uploadMedia(fileName, appId + "/review/inspect/" + qid + "/", citem);
         }
       }
     });
@@ -104,10 +124,11 @@ function processDir(item) {
         console.log("Error copying files in : " + item);
       }
       else {
+        var qid = getQuesId(item);
         for(var j in citems) {
           var citem = citems[j];
           var fileName =  __dirname + "/" + appId + "/interview/Images/" + item + "/" + citem;
-          uploadMedia(fileName, appId + "/review/otherimages/", citem);
+          uploadMedia(fileName, appId + "/review/inspect/" + qid + "/", citem);
         }
       }
     });
@@ -131,11 +152,11 @@ function CopyMedia() {
 function CopyExecutable() {
   console.log("Copying executables");
   var dir = require("./dir.js");
-  dir.dir("downloads", appPath + "/*", function(aList){
+  dir.dir("downloads", "Completed/DeceptorReview/" + appId + "/*", function(aList){
     if(aList && aList.length > 0) {
       for(var ix=0; ix < aList.length; ix++) {
         var fileName = aList[ix];
-        if(fileName.indexOf("Interview.zip") > 0 || fileName.indexOf("Notes.txt") > 0) {
+        if(fileName.indexOf("Interview.zip") > 0) {
           continue;
         }
         else {
@@ -330,6 +351,10 @@ function ProcessACRAndExecs(ws, wsExec) {
           //console.log("--" + scDict[acrNo] + "--");
           if(scDict[acrNo] && scDict[acrNo][colNameDict[colIx]]) {
             quesId = scDict[acrNo][colNameDict[colIx]];
+            if(!acrQidDict[acrNo])
+            {
+              acrQidDict[acrNo] = quesId;
+            }
           }
           if(!quesId) {
             console.log("Error finding questionId for " + acrNo + " and Panel:" + colNameDict[colIx] + ":");
@@ -366,6 +391,9 @@ function  ReadInterview() {
       wsACR = workbook.getWorksheet('ACR_ScoreCard');
     }
     if(!wsACR) {
+      wsACR = workbook.getWorksheet('ACR_Scorecard');
+    }
+    if(!wsACR) {
       wsACR = workbook.getWorksheet('Deceptor_List');
     }
     if(!wsACR) {
@@ -396,6 +424,9 @@ function ReadQuesSchema() {
       scDict = {};
     for(var ix in questions) {
       var ques = questions[ix];
+      if(ques.answerType != "attest" && !unknownQid) {
+        unknownQid = ques.id;
+      }
       //all the scorecard question will have answertype as attest
       if(ques.answertype == "attest") {
         var col = ques.panel;
@@ -466,5 +497,6 @@ else {
       fs.mkdirSync("./" + appId);
   }
 
+  CopyExecutable();
   downloadFiles();
 }
