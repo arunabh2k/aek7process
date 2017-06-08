@@ -6,7 +6,7 @@ var extract = require('extract-zip');
 var violationDict = null;
 var scDict = null;
 var samples = null;
-var baseURL = "http://localhost:46562/";
+var baseURL = "https://customer.appesteem.com/";
 var acrQidDict = {};
 var unknownQid = null;
 //copy all the files and download to local
