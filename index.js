@@ -234,6 +234,12 @@ function UploadViolation() {
 }
 
 function ProcessExecs(ws) {
+  if(!ws) {
+    console.log("No executable tab ... ");
+    samples = [];
+    UploadViolation();
+    return;
+  }
   console.log("Processing MetaData ....")
   var colNameDict = {};
   var maxCol = 27;
@@ -283,10 +289,10 @@ function ProcessExecs(ws) {
           colNameDict[colIx] = "HashSHA256";
         }
         else if(val == "Issuer Name" || val == "issuerName") {
-          colNameDict[colIx] = "IssuerName";
+          colNameDict[colIx] = "DigitalCertIssuer";
         }
         else if(val == "Issued To" || val == "issuedTo") {
-          colNameDict[colIx] = "IssuedTo";
+          colNameDict[colIx] = "DigitalCertIssuedTo";
         }
         else {
           console.log("Unknown Header Found :" + val + ", continuing the process");
@@ -374,6 +380,7 @@ function ProcessACRAndExecs(ws, wsExec) {
   }
   if(!violationDict) {
     console.log("No Violation found in interview");
+    ProcessExecs(wsExec);
   }
   else {
     console.log("Successfully extracted violations");
@@ -387,6 +394,9 @@ function  ReadInterview() {
   var workbook = new Excel.Workbook();
   workbook.xlsx.readFile(__dirname + "/" + appId + "/interview/" + appId + ".xlsx").then(function() {
     var wsACR = workbook.getWorksheet('ACR_List');
+    if(!wsACR) {
+      wsACR = workbook.getWorksheet('Scorecard');
+    }
     if(!wsACR) {
       wsACR = workbook.getWorksheet('ACR_ScoreCard');
     }
@@ -404,20 +414,21 @@ function  ReadInterview() {
       wsExec = workbook.getWorksheet('Executable');
     }
     if(!wsACR) {
-      console.log("Not able to find tab for DeceptorList with Name ACR_List or ACR_ScoreCard or Deceptor_List or ACR_Details ... exiting");
+      console.log("Not able to find tab for DeceptorList with Name ACR_List or ACR_ScoreCard or ACR_Scorecard or Scorecard or Deceptor_List or ACR_Details ... exiting");
       return;
     }
     if(!wsExec) {
-      console.log("Not able to find tab for Executables with Name Executables or Executables ... exiting");
-      return;
+      console.log("Not able to find tab for Executables with Name Executables or Executables ...");
     }
     ProcessACRAndExecs(wsACR, wsExec);
   });
 }
 
 function ReadQuesSchema() {
-  var schemaURL = baseURL + "api/schema?schema=DeceptorList";
+  var schemaURL = baseURL + "api/schema?schema=Certification";
+  console.log("Requesting schema from: " + schemaURL);
   axios.get(schemaURL).then(function(response) {
+    console.log(response);
     console.log("Reading schema ....");
     var questions = response.data;
     if(!scDict)
