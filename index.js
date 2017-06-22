@@ -9,6 +9,8 @@ var samples = null;
 var baseURL = "https://customer.appesteem.com/";
 var acrQidDict = {};
 var unknownQid = null;
+var imagesType = "ACR-";
+var videoType = "ACR-INFO";
 //copy all the files and download to local
 //process xlsx and other files and images/videos
 //this will generate a deceptor and call process deceptor api, which will take appId and if it exist in the download storage
@@ -84,9 +86,10 @@ function uploadMedia(fileName, basePath, citem) {
 }
 
 function getQuesId(fileName) {
-  var acrIx = fileName.indexOf("ACR-");
+  var acrIx = fileName.indexOf(imagesType);
   if(acrIx > -1) {
     var acrNo = fileName.substring(acrIx, acrIx+7);
+    acrNo = acrNo.replace("_", "-");
     if(acrQidDict[acrNo]) {
       return acrQidDict[acrNo];
     }
@@ -102,7 +105,7 @@ function getQuesId(fileName) {
 }
 
 function processDir(item) {
-  if(item == "ACR-INFO") {
+  if(item == videoType) {
     fs.readdir(__dirname + "/" + appId + "/interview/Images/" + item + "/", function(cerr, citems) {
       if(cerr) {
         console.log("Error copying files in : " + item);
@@ -116,9 +119,8 @@ function processDir(item) {
         }
       }
     });
-
   }
-  else if(item.indexOf("ACR-") > -1) {
+  else if(item.indexOf(imagesType) > -1) {
     fs.readdir(__dirname + "/" + appId + "/interview/Images/" + item + "/", function(cerr, citems) {
       if(cerr) {
         console.log("Error copying files in : " + item);
@@ -428,7 +430,7 @@ function ReadQuesSchema() {
   var schemaURL = baseURL + "api/schema?schema=Certification";
   console.log("Requesting schema from: " + schemaURL);
   axios.get(schemaURL).then(function(response) {
-    console.log(response);
+    //console.log(response);
     console.log("Reading schema ....");
     var questions = response.data;
     if(!scDict)
